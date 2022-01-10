@@ -133,5 +133,8 @@ STATIC_URL = '/static/'
 CLIENT_SPORT_URLS = {
     'OLIMPWIN': {
         'FOOTBALL': 'https://olimpwin.com/sports/?t=-60#2/0/0/0/'
+    },
+    'ZLATNIK': {
+        'FOOTBALL': 'https://www.zlatnik.me/srl/sports-betting/offer/fudbal?hours=72'
     }
 }
