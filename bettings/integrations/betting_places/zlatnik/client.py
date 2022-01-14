@@ -7,6 +7,7 @@ import typing
 from django.conf import settings
 from selenium import webdriver
 from webdriver_manager.firefox import GeckoDriverManager
+from selenium.common import exceptions as selenium_exceptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service
 
@@ -142,14 +143,20 @@ class ZlatnikSoccerClient(ZlatnikBaseClient):
     def _get_element(driver, x_path):
         try:
             return driver.find_element(By.XPATH, x_path)
+        except selenium_exceptions.NoSuchElementException as e:
+            raise betting_exceptions.XpathElementNotFoundException(str(e))
         except Exception as e:
-            raise betting_exceptions.XpathElementNotFoundException()
+            raise betting_exceptions.XpathGeneralException(str(e))
 
     @staticmethod
     def _get_elements(driver, x_path):
         try:
-            return driver.find_elements(By.XPATH, x_path)
+            elements = driver.find_elements(By.XPATH, x_path)
+            if not elements:
+                raise betting_exceptions.XpathElementsNotFoundError()
+            return elements
         except Exception as e:
-            raise betting_exceptions.XpathElementsNotFoundError()
+            raise betting_exceptions.XpathGeneralException(str(e))
+
 
     # TODO: Write init driver method

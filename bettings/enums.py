@@ -22,10 +22,11 @@ class Sports(ChoiceEnums):
 class BettingInstitutions(ChoiceEnums):
     OLIMPWIN = 1
     ZLATNIK = 2
-
+    ADMIRAL = 3
     def get_description(self):
         _descriptions = {
             self.OLIMPWIN: "OLIMP",
             self.ZLATNIK: "ZLATNIK",
+            self.ADMIRAL: "ADMIRAL",
         }
         return _descriptions.get(self)

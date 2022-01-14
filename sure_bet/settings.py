@@ -136,5 +136,8 @@ CLIENT_SPORT_URLS = {
     },
     'ZLATNIK': {
         'FOOTBALL': 'https://www.zlatnik.me/srl/sports-betting/offer/fudbal?hours=72'
+    },
+    'ADMIRAL': {
+        'FOOTBALL': 'https://www.admiralbet.me/sport-prematch?sport=Fudbal',
     }
 }
