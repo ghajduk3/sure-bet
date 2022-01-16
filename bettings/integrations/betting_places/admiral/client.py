@@ -10,6 +10,7 @@ from webdriver_manager.firefox import GeckoDriverManager
 from selenium.common import exceptions as selenium_exceptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox import options
 from selenium.webdriver.support import select
 
 from bettings import enums as betting_enums
@@ -22,12 +23,17 @@ _LOG_PREFIX = "[ADMIRAL_CLIENT]"
 
 
 class AdmiralBaseClient(object):
-    def __init__(self, sport):
-        # type: (betting_enums.Sports) -> None
+    def __init__(self, sport, headless=True):
+        # type: (betting_enums.Sports, typing.Dict) -> None
         self.url = settings.CLIENT_SPORT_URLS[
-            betting_enums.BettingInstitutions.ADMIRAL.name.upper()
+            bet_place_enums.BettingInstitutions.ADMIRAL.name.upper()
         ][sport.name.upper()]
-        self.driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
+        self.driver = self._get_driver(headless)
+
+    def _get_driver(self, headless):
+        fireFoxOptions = options.Options()
+        fireFoxOptions.headless = headless
+        return webdriver.Firefox(options=fireFoxOptions, service=Service(GeckoDriverManager().install()))
 
 
 class AdmiralSoccerClient(AdmiralBaseClient):
@@ -73,6 +79,7 @@ class AdmiralSoccerClient(AdmiralBaseClient):
         tournament_name = ''
         current_date = datetime.date.today()
         all_matches = []
+
         while True:
             matches_by_day = self._get_matches_by_day()
             if not matches_by_day:
@@ -92,7 +99,7 @@ class AdmiralSoccerClient(AdmiralBaseClient):
                         match_date_time = self._combine_date_time(matches_date, self._get_match_time(match))
                         if (match_date_time.date() - current_date).days > bet_place_constants.BET_DAY_FETCH_LIMIT:
                             logger.info("{} Match is not within the 3 day range. Exiting".format(_LOG_PREFIX))
-                            return
+                            return all_matches
                     except betting_exceptions.XpathElementNotFoundException:
                         continue
                     try:
@@ -101,8 +108,8 @@ class AdmiralSoccerClient(AdmiralBaseClient):
                         logger.info("{} Unable to find league name".format(_LOG_PREFIX))
 
                     all_matches.append({
-                            "player_home": player_home,
-                            "player_away": player_away,
+                            "player_home": self._get_normalized_soccer_team_info(player_home),
+                            "player_away": self._get_normalized_soccer_team_info(player_away),
                             "sport": betting_enums.Sports.FOOTBALL,
                             "bet_odds": bet_odds,
                             "date_time": match_date_time,
@@ -110,7 +117,7 @@ class AdmiralSoccerClient(AdmiralBaseClient):
                             "tournament": tournament_name,
                         }
                     )
-
+            print("New page", len(all_matches), matches_date)
             self._get_next_page()
 
     @staticmethod
@@ -208,8 +215,29 @@ class AdmiralSoccerClient(AdmiralBaseClient):
         return match_date
 
     def _get_next_page(self):
-        x_path = '//li[contains(text(), "Sledeća")]'
-        self._get_element(self.driver, x_path).click()
+        time.sleep(2)
+        x_path_page_enum = '//ul[contains(@class, "pagination")]//li[contains(@class, "page-item active")]'
+        try:
+            current_page = self._get_element(self.driver, x_path_page_enum).text
+            for i in range(5):
+                x_path = '//li[contains(text(), "Sledeća")]'
+                next_page_click = self._get_element(self.driver, x_path)
+                self.driver.execute_script("arguments[0].click();", next_page_click)
+                time.sleep(1)
+                next_page = self._get_element(self.driver, x_path_page_enum).text
+                if next_page == current_page:
+                    continue
+                else:
+                    break
+
+            if next_page == current_page:
+                raise betting_exceptions.UnableToSwitchPageError("Unable to switch to now page")
+        except betting_exceptions.XpathElementNotFoundException:
+            print("Exception")
+            logger.info("{} An exception occured while fetching new page. Continue.".format(_LOG_PREFIX))
+
+
+
 
     @staticmethod
     def _get_element(driver, x_path):
@@ -264,13 +292,13 @@ class AdmiralSoccerClient(AdmiralBaseClient):
             "./article/div[1]/div[2]/div[contains(@class, 'bet-type-col')]/span[3]/div[1]",
         ).text
         oneex = cls._get_element(
-            driver, "./article/div[1]/div[2]/div[2]/span[1]/div[1]"
+            driver, "./article/div[1]/div[2]/div[3]/span[1]/div[1]"
         ).text
         onetwo = cls._get_element(
-            driver, "./article/div[1]/div[2]/div[2]/span[2]/div[1]"
+            driver, "./article/div[1]/div[2]/div[3]/span[2]/div[1]"
         ).text
         extwo = cls._get_element(
-            driver, "./article/div[1]/div[2]/div[2]/span[3]/div[1]"
+            driver, "./article/div[1]/div[2]/div[3]/span[3]/div[1]"
         ).text
 
         return {
@@ -281,3 +309,14 @@ class AdmiralSoccerClient(AdmiralBaseClient):
             bet_place_enums.FootballMatchPlays.XTWO.value: float(extwo),
             bet_place_enums.FootballMatchPlays.ONETWO.value: float(onetwo),
         }
+
+
+    @staticmethod
+    def _get_normalized_soccer_team_info(team_name):
+        text = re.sub(r"[^a-zA-Z0-9\sčČšŠžŽ]", "", team_name)
+        # remove multiple white spaces
+        text = re.sub(' +', ' ', text)
+        # convert all letters to lower case
+        text = text.lower().strip()
+        text = sorted(text.split(' '), key=len)[-1]
+        return text

@@ -10,6 +10,8 @@ from webdriver_manager.firefox import GeckoDriverManager
 from selenium.common import exceptions as selenium_exceptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox import options
+
 
 from bettings import enums as betting_enums
 from bettings.integrations.betting_places import enums as bet_place_enums
@@ -20,12 +22,17 @@ _LOG_PREFIX = "[ZLATNIK_CLIENT]"
 
 
 class ZlatnikBaseClient(object):
-    def __init__(self, sport):
+    def __init__(self, sport, headless=True):
         # type: (betting_enums.Sports) -> None
         self.url = settings.CLIENT_SPORT_URLS[
-            betting_enums.BettingInstitutions.ZLATNIK.name.upper()
+            bet_place_enums.BettingInstitutions.ZLATNIK.name.upper()
         ][sport.name.upper()]
-        self.driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
+        self.driver = self._get_driver(headless)
+
+    def _get_driver(self, headless):
+        fireFoxOptions = options.Options()
+        fireFoxOptions.headless = headless
+        return webdriver.Firefox(options=fireFoxOptions, service=Service(GeckoDriverManager().install()))
 
 
 class ZlatnikSoccerClient(ZlatnikBaseClient):
@@ -44,6 +51,7 @@ class ZlatnikSoccerClient(ZlatnikBaseClient):
         return football_leagues
 
     def get_matches_odds_all(self):
+        all_match_odds = []
         for league in self._get_football_leagues():
             for tournament in self._get_football_tournaments(league):
                 try:
@@ -53,20 +61,23 @@ class ZlatnikSoccerClient(ZlatnikBaseClient):
                             player_home, player_away = self._get_match_players(match)
                             date_time = self._get_match_date_time(match)
                             bet_odds = self._get_match_odds(match)
-                            yield {
-                            "player_home": player_home,
-                            "player_away": player_away,
-                            "sport": betting_enums.Sports.FOOTBALL,
-                            "league": league_name,
-                            "tournament": tournament_name,
-                            "date_time": date_time,
-                            "bet_odds": bet_odds,
+                            match_odds = {
+                                "player_home": self._get_normalized_soccer_team_info(player_home),
+                                "player_away": self._get_normalized_soccer_team_info(player_away),
+                                "sport": betting_enums.Sports.FOOTBALL,
+                                "league": league_name,
+                                "tournament": tournament_name,
+                                "date_time": date_time,
+                                "bet_odds": bet_odds,
                             }
+                            all_match_odds.append(match_odds)
                         except betting_exceptions.XpathBaseException:
                             continue
                 except betting_exceptions.XpathBaseException:
                     continue
+
         self.driver.close()
+        return all_match_odds
 
     @classmethod
     def _get_football_tournaments(cls, driver_element):
@@ -104,11 +115,11 @@ class ZlatnikSoccerClient(ZlatnikBaseClient):
 
     @classmethod
     def _get_match_date_time(cls, driver_element):
-        x_path_time = './app-match/div[1]/div[1]/div[contains(@class, "match-time")]/div[2]'
-        x_path_date = './app-match/div[1]/div[1]/div[contains(@class, "match-time")]/div[1]'
+        x_path_time = './/app-match/div[1]/div[1]/div[contains(@class, "match-time")]/div[2]'
+        x_path_date = './/app-match/div[1]/div[1]/div[contains(@class, "match-time")]/div[1]'
         # Get date and combine
-        match_time_raw = cls._get_element(driver_element, x_path_time).text
-        match_date_raw = cls._get_element(driver_element, x_path_date).text
+        match_time_raw = cls._get_element(driver_element, x_path_time).get_attribute("innerHTML")
+        match_date_raw = cls._get_element(driver_element, x_path_date).get_attribute("innerHTML")
 
         if match_time_raw and match_date_raw:
             parsed_date_time = match_date_raw.split('.')[:3]
@@ -116,18 +127,28 @@ class ZlatnikSoccerClient(ZlatnikBaseClient):
 
             hour, minutes = match_time_raw.split(":")
             match_date_time = datetime.datetime(
-                int(year), int(month), int(day), int(hour), int(minutes)
+                int('20' + year), int(month), int(day), int(hour), int(minutes)
             )
             return match_date_time
         return None
 
     @classmethod
     def _get_match_odds(cls, driver_element):
-        odds_xpath = './app-match/div[1]/div[2]/div/div'
-        match_odds = [cls._get_element(odd, './/div[contains(@class, "odd-value")]/span').text for odd in cls._get_elements(driver_element, odds_xpath)]
+        odds_xpath = './/div[contains(@class, "match-odds")]//div[contains(@class, "odd-value")]'
+        odd_wrappers = cls._get_elements(driver_element, odds_xpath)
 
-        if match_odds:
-            one, ex, two, oneex, extwo, onetwo = match_odds
+        def parse_match_odds(odds):
+            match_odds = []
+            for odd in odds:
+                match_odd = cls._get_element(odd, './/span').get_attribute("innerHTML")
+                match_odd = match_odd.strip().replace(',', '.')
+                match_odds.append(float(match_odd))
+            return match_odds
+
+        match_odds_all = parse_match_odds(odd_wrappers)
+
+        if match_odds_all:
+            one, ex, two, oneex, extwo, onetwo = match_odds_all
             return {
                 bet_place_enums.FootballMatchPlays.ONE.value: one,
                 bet_place_enums.FootballMatchPlays.X.value: ex,
@@ -136,7 +157,6 @@ class ZlatnikSoccerClient(ZlatnikBaseClient):
                 bet_place_enums.FootballMatchPlays.XTWO.value: extwo,
                 bet_place_enums.FootballMatchPlays.ONETWO.value: onetwo,
             }
-
         return {}
 
     @staticmethod
@@ -160,3 +180,13 @@ class ZlatnikSoccerClient(ZlatnikBaseClient):
 
 
     # TODO: Write init driver method
+
+    @staticmethod
+    def _get_normalized_soccer_team_info(team_name):
+        text = re.sub(r"[^a-zA-Z0-9\sčČšŠžŽ]", "", team_name)
+        # remove multiple white spaces
+        text = re.sub(' +', ' ', text)
+        # convert all letters to lower case
+        text = text.lower().strip()
+        text = sorted(text.split(' '), key=len)[-1]
+        return text
