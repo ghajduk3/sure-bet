@@ -2,6 +2,7 @@
 
 import bettings.enums
 from django.db import migrations, models
+from bettings.integrations.betting_places import enums as bet_place_enums
 import django.db.models.deletion
 
 
@@ -34,7 +35,7 @@ class Migration(migrations.Migration):
             name='BetOdds',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('betting_institution', models.IntegerField(choices=[(1, 'OLIMP kladionica')], default=bettings.enums.BettingInstitutions['OLIMPWIN'])),
+                ('betting_institution', models.IntegerField(choices=[(1, 'OLIMP kladionica')], default=bet_place_enums.BettingInstitutions['OLIMPWIN'])),
                 ('odds', models.JSONField()),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),

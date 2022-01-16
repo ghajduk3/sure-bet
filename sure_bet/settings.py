@@ -121,7 +121,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -135,6 +135,9 @@ CLIENT_SPORT_URLS = {
         'FOOTBALL': 'https://olimpwin.com/sports/?t=-60#2/0/0/0/'
     },
     'ZLATNIK': {
-        'FOOTBALL': 'https://www.zlatnik.me/srl/sports-betting/offer/fudbal?hours=72'
+        'FOOTBALL': 'https://www.zlatnik.me/srl/sports-betting/offer/fudbal?hours=24'
+    },
+    'ADMIRAL': {
+        'FOOTBALL': 'https://www.admiralbet.me/sport-prematch?sport=Fudbal',
     }
 }

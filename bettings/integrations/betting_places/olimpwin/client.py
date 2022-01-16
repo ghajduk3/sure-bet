@@ -8,6 +8,8 @@ from selenium import webdriver
 from webdriver_manager.firefox import GeckoDriverManager
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service
+from selenium.webdriver.firefox import options
+
 
 from bettings import enums as betting_enums
 from bettings.integrations.betting_places import enums as bet_place_enums
@@ -17,12 +19,17 @@ _LOG_PREFIX = "[OLIMP_CLIENT]"
 
 
 class OlimpBaseClient(object):
-    def __init__(self, sport):
+    def __init__(self, sport, headless=True):
         # type: (betting_enums.Sports) -> None
         self.url = settings.CLIENT_SPORT_URLS[
-            betting_enums.BettingInstitutions.OLIMPWIN.name.upper()
+            bet_place_enums.BettingInstitutions.OLIMPWIN.name.upper()
         ][sport.name.upper()]
-        self.driver = webdriver.Firefox(service=Service(GeckoDriverManager().install()))
+        self.driver = self._get_driver(headless)
+
+    def _get_driver(self, headless):
+        fireFoxOptions = options.Options()
+        fireFoxOptions.headless = headless
+        return webdriver.Firefox(options=fireFoxOptions, service=Service(GeckoDriverManager().install()))
 
 
 class OlimpSoccerClient(OlimpBaseClient):
@@ -40,6 +47,7 @@ class OlimpSoccerClient(OlimpBaseClient):
         return football_leagues
 
     def get_matches_odds_all(self):
+        all_match_odds = []
         for league in self.get_football_leagues():
             league_name = self._get_league_name(league)
             tournament_name = self._get_tournament_name(league)
@@ -49,17 +57,19 @@ class OlimpSoccerClient(OlimpBaseClient):
                 date_time = self._get_match_date_time(match)
                 bet_odds = self._get_match_odds(match)
 
-                yield {
-                    "player_home": player_home,
-                    "player_away": player_away,
+                match_odds = {
+                    "player_home": self._get_normalized_soccer_team_info(player_home),
+                    "player_away": self._get_normalized_soccer_team_info(player_away),
                     "sport": betting_enums.Sports.FOOTBALL,
                     "league": league_name,
                     "tournament": tournament_name,
                     "date_time": date_time,
                     "bet_odds": bet_odds,
                 }
+                all_match_odds.append(match_odds)
 
         self.driver.close()
+        return all_match_odds
 
     @classmethod
     def _get_match_odds(cls, driver_element):
@@ -98,12 +108,12 @@ class OlimpSoccerClient(OlimpBaseClient):
     @staticmethod
     def _get_league_name(driver_element):
         x_path = './/div[1]/table/tbody/tr/td[@class="grupa"]/span[2]'
-        return driver_element.find_element(By.XPATH, x_path)
+        return driver_element.find_element(By.XPATH, x_path).text
 
     @staticmethod
     def _get_tournament_name(driver_element):
         x_path = './/div[1]/table/tbody/tr/td[@class="grupa"]/span[3]'
-        return driver_element.find_element(By.XPATH, x_path)
+        return driver_element.find_element(By.XPATH, x_path).text
 
     @staticmethod
     def _get_match_players(driver_element):
@@ -142,3 +152,13 @@ class OlimpSoccerClient(OlimpBaseClient):
     @staticmethod
     def _parse_match_odd(odd):
         return float(odd.replace(",", "."))
+
+    @staticmethod
+    def _get_normalized_soccer_team_info(team_name):
+        text = re.sub(r"[^a-zA-Z0-9\sčČšŠžŽ]", "", team_name)
+        # remove multiple white spaces
+        text = re.sub(' +', ' ', text)
+        # convert all letters to lower case
+        text = text.lower().strip()
+        text = sorted(text.split(' '), key=len)[-1]
+        return text
