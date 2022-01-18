@@ -139,5 +139,8 @@ CLIENT_SPORT_URLS = {
     },
     'ADMIRAL': {
         'FOOTBALL': 'https://www.admiralbet.me/sport-prematch?sport=Fudbal',
+    },
+    'MERIDIAN': {
+        'FOOTBALL': 'https://meridianbet.me/sr/kladjenje/fudbal',
     }
 }

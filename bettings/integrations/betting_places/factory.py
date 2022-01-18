@@ -9,6 +9,7 @@ from bettings.integrations.betting_places.olimpwin.client import OlimpSoccerClie
 from bettings.integrations.betting_places.zlatnik import client as zlatnik_client
 from bettings.integrations.betting_places.olimpwin import client as olimp_client
 from bettings.integrations.betting_places.admiral import client as admiral_client
+from bettings.integrations.betting_places.meridian import client as meridian_client
 from bettings.integrations.betting_places.zlatnik.client import ZlatnikSoccerClient
 
 logger = logging.getLogger(__name__)
@@ -22,6 +23,7 @@ class Factory:
             bet_place_enums.BettingInstitutions.OLIMPWIN: olimp_client.OlimpSoccerClient,
             bet_place_enums.BettingInstitutions.ZLATNIK: zlatnik_client.ZlatnikSoccerClient,
             bet_place_enums.BettingInstitutions.ADMIRAL: admiral_client.AdmiralSoccerClient,
+            bet_place_enums.BettingInstitutions.MERIDIAN: meridian_client.MeridianSoccerClient,
         }
     }
 
@@ -33,11 +35,11 @@ class Factory:
         if not sport_clients:
             raise bet_place_exceptions.BetIntegrationClientNotFound("{} There are no clients for sport {}".format(_LOG_PREFIX, sport.name))
 
-        client = sport_clients.get(client)
-        if not client:
+        bet_client = sport_clients.get(client)
+        if not bet_client:
             raise bet_place_exceptions.BetIntegrationClientNotFound("{} Client {} is not found for sport {}".format(_LOG_PREFIX, client.name, sport.name))
 
         try:
-            return client()
+            return bet_client()
         except Exception as e:
             logger.exception("{} Client initialization error".format(_LOG_PREFIX))

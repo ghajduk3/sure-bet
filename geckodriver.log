@@ -7735,3 +7735,155 @@ console.warn: SearchSettings: "get: No settings file exists, new profile?" (new 
 DevTools listening on ws://localhost:51967/devtools/browser/6a395e43-e334-4516-809b-16ed4603477d
 1642529845949	Marionette	INFO	Listening on port 34687
 1642529846042	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+1642542089405	geckodriver	INFO	Listening on 127.0.0.1:47515
+1642542089912	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "50487" "-no-remote" "-profile" "/tmp/rust_mozprofile30KKw6"
+*** You are running in headless mode.
+1642542090482	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofile30KKw6/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:50487/devtools/browser/2d73307a-2a03-475f-b552-a8df7c0a99f9
+1642542091579	Marionette	INFO	Listening on port 33557
+1642542092280	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://c.la1-c1cs-cdg.salesforceliveagent.com/content/g/js/48.0/deployment.js, line 68: Error: Invalid DeploymentId Parameter Value: 5735I000000LNrI
+1642542170851	geckodriver	INFO	Listening on 127.0.0.1:52933
+1642542170858	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "47589" "-no-remote" "-profile" "/tmp/rust_mozprofileJNNfq6"
+*** You are running in headless mode.
+1642542171257	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileJNNfq6/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:47589/devtools/browser/c0c0a903-deea-44f5-9763-3f4cf4abfc30
+1642542172285	Marionette	INFO	Listening on port 40569
+1642542172372	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://c.la1-c1cs-cdg.salesforceliveagent.com/content/g/js/48.0/deployment.js, line 68: Error: Invalid DeploymentId Parameter Value: 5735I000000LNrI
+1642542235349	geckodriver	INFO	Listening on 127.0.0.1:34947
+1642542235859	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "56507" "-no-remote" "-profile" "/tmp/rust_mozprofileKyU44s"
+*** You are running in headless mode.
+1642542236301	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileKyU44s/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:56507/devtools/browser/5758dd12-05b6-4057-b95e-ed3892e77244
+1642542237270	Marionette	INFO	Listening on port 39703
+1642542237374	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://c.la1-c1cs-cdg.salesforceliveagent.com/content/g/js/48.0/deployment.js, line 68: Error: Invalid DeploymentId Parameter Value: 5735I000000LNrI
+1642542286394	geckodriver	INFO	Listening on 127.0.0.1:60681
+1642542286900	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "56717" "-no-remote" "-profile" "/tmp/rust_mozprofilek5NDP7"
+*** You are running in headless mode.
+1642542287291	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofilek5NDP7/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:56717/devtools/browser/aacae4bf-304a-441d-9604-f3c43d2e183e
+1642542288241	Marionette	INFO	Listening on port 42181
+1642542288313	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://c.la1-c1cs-cdg.salesforceliveagent.com/content/g/js/48.0/deployment.js, line 68: Error: Invalid DeploymentId Parameter Value: 5735I000000LNrI
+1642542409224	geckodriver	INFO	Listening on 127.0.0.1:42997
+1642542409736	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "54183" "-no-remote" "-profile" "/tmp/rust_mozprofileiomqem"
+*** You are running in headless mode.
+1642542410310	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileiomqem/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:54183/devtools/browser/0ac3b344-2615-4cbd-b9d8-4115af69e99f
+1642542411550	Marionette	INFO	Listening on port 45873
+1642542412076	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://c.la1-c1cs-cdg.salesforceliveagent.com/content/g/js/48.0/deployment.js, line 68: Error: Invalid DeploymentId Parameter Value: 5735I000000LNrI
+1642542475443	geckodriver	INFO	Listening on 127.0.0.1:52889
+1642542475968	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "58623" "-no-remote" "-profile" "/tmp/rust_mozprofile8rF8U7"
+*** You are running in headless mode.
+1642542477295	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofile8rF8U7/search.json.mozlz4", (void 0)))
+console.error: Region.jsm: "Error fetching region" (new Error("TIMEOUT", "resource://gre/modules/Region.jsm", 772))
+console.error: Region.jsm: "Failed to fetch region" (new Error("TIMEOUT", "resource://gre/modules/Region.jsm", 419))
+DevTools listening on ws://localhost:58623/devtools/browser/63b051ff-3de4-4cea-9d50-ed323179d830
+1642542539716	Marionette	INFO	Listening on port 35115
+Exiting due to channel error.
+Exiting due to channel error.
+1642542607605	geckodriver	INFO	Listening on 127.0.0.1:48207
+1642542608108	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "57069" "-no-remote" "-profile" "/tmp/rust_mozprofilepvGTDT"
+*** You are running in headless mode.
+1642542608897	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofilepvGTDT/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:57069/devtools/browser/52169290-54a0-40e3-bd02-fa871f017025
+1642542611093	Marionette	INFO	Listening on port 43267
+1642542611229	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://c.la1-c1cs-cdg.salesforceliveagent.com/content/g/js/48.0/deployment.js, line 68: Error: Invalid DeploymentId Parameter Value: 5735I000000LNrI
+1642542814180	geckodriver	INFO	Listening on 127.0.0.1:56891
+1642542814681	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "55589" "-no-remote" "-profile" "/tmp/rust_mozprofileWIkXBy"
+*** You are running in headless mode.
+1642542815288	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileWIkXBy/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:55589/devtools/browser/522d0a9a-89cd-4594-b6a3-e67809a29ab6
+1642542816877	Marionette	INFO	Listening on port 40213
+1642542816918	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://c.la1-c1cs-cdg.salesforceliveagent.com/content/g/js/48.0/deployment.js, line 68: Error: Invalid DeploymentId Parameter Value: 5735I000000LNrI
+1642542912245	geckodriver	INFO	Listening on 127.0.0.1:57185
+1642542912249	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "50343" "-no-remote" "-profile" "/tmp/rust_mozprofileIx7POl"
+*** You are running in headless mode.
+1642542912624	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileIx7POl/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:50343/devtools/browser/c11bf6ae-6a9b-4c30-886f-bea1a82b8e09
+1642542913527	Marionette	INFO	Listening on port 33287
+1642542914313	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://c.la1-c1cs-cdg.salesforceliveagent.com/content/g/js/48.0/deployment.js, line 68: Error: Invalid DeploymentId Parameter Value: 5735I000000LNrI
+1642542948629	geckodriver	INFO	Listening on 127.0.0.1:58015
+1642542948639	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "56805" "-no-remote" "-profile" "/tmp/rust_mozprofileWFDnWj"
+*** You are running in headless mode.
+1642542948976	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileWFDnWj/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:56805/devtools/browser/ac3a70ed-a671-4d39-a623-b9a589af9dd4
+1642542949894	Marionette	INFO	Listening on port 43429
+1642542949952	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://c.la1-c1cs-cdg.salesforceliveagent.com/content/g/js/48.0/deployment.js, line 68: Error: Invalid DeploymentId Parameter Value: 5735I000000LNrI
+1642543018287	geckodriver	INFO	Listening on 127.0.0.1:47219
+1642543018295	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "50147" "-no-remote" "-profile" "/tmp/rust_mozprofilev0KlxM"
+*** You are running in headless mode.
+1642543018719	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofilev0KlxM/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:50147/devtools/browser/87358d4b-d843-4ac0-92d5-36bd541eab2d
+1642543019638	Marionette	INFO	Listening on port 46475
+1642543019709	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://c.la1-c1cs-cdg.salesforceliveagent.com/content/g/js/48.0/deployment.js, line 68: Error: Invalid DeploymentId Parameter Value: 5735I000000LNrI
+1642543031839	geckodriver	INFO	Listening on 127.0.0.1:38393
+1642543031845	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "58245" "-no-remote" "-profile" "/tmp/rust_mozprofileKY8y8V"
+*** You are running in headless mode.
+1642543032271	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileKY8y8V/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:58245/devtools/browser/d4ced7a0-be8c-4214-9dca-8be2ffb35a1c
+1642543033212	Marionette	INFO	Listening on port 45303
+1642543033898	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://c.la1-c1cs-cdg.salesforceliveagent.com/content/g/js/48.0/deployment.js, line 68: Error: Invalid DeploymentId Parameter Value: 5735I000000LNrI
+1642543252036	geckodriver	INFO	Listening on 127.0.0.1:59379
+1642543252040	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "33877" "-no-remote" "-profile" "/tmp/rust_mozprofilee0Abnm"
+*** You are running in headless mode.
+1642543252442	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofilee0Abnm/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:33877/devtools/browser/adb77f41-b14c-47b8-9711-58fe43238186
+1642543253416	Marionette	INFO	Listening on port 35629
+1642543254090	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://c.la1-c1cs-cdg.salesforceliveagent.com/content/g/js/48.0/deployment.js, line 68: Error: Invalid DeploymentId Parameter Value: 5735I000000LNrI
+1642543283789	geckodriver	INFO	Listening on 127.0.0.1:50473
+1642543283798	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "40753" "-no-remote" "-profile" "/tmp/rust_mozprofileVsvWTu"
+*** You are running in headless mode.
+1642543284249	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofileVsvWTu/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:40753/devtools/browser/f1054446-589b-4823-87a7-5af0ae022012
+1642543285217	Marionette	INFO	Listening on port 39343
+1642543285312	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://c.la1-c1cs-cdg.salesforceliveagent.com/content/g/js/48.0/deployment.js, line 68: Error: Invalid DeploymentId Parameter Value: 5735I000000LNrI
+1642543304981	geckodriver	INFO	Listening on 127.0.0.1:48601
+1642543304986	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "--marionette" "-headless" "--remote-debugging-port" "59353" "-no-remote" "-profile" "/tmp/rust_mozprofile82NQYI"
+*** You are running in headless mode.
+1642543305452	Marionette	INFO	Marionette enabled
+[GFX1-]: RenderCompositorSWGL failed mapping default framebuffer, no dt
+console.warn: SearchSettings: "get: No settings file exists, new profile?" (new NotFoundError("Could not open the file at /tmp/rust_mozprofile82NQYI/search.json.mozlz4", (void 0)))
+DevTools listening on ws://localhost:59353/devtools/browser/9c8de23c-b914-415e-bb4b-59dd60c4eafe
+1642543306708	Marionette	INFO	Listening on port 46153
+1642543306819	RemoteAgent	WARN	TLS certificate errors will be ignored for this session
+JavaScript error: https://c.la1-c1cs-cdg.salesforceliveagent.com/content/g/js/48.0/deployment.js, line 68: Error: Invalid DeploymentId Parameter Value: 5735I000000LNrI

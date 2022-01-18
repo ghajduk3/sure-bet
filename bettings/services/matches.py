@@ -11,7 +11,7 @@ class MatchProcessing:
     def create_matches(cls):
         # get matches for all sports for all clients
         for sport in betting_enums.Sports:
-            for client in bet_place_enums.BettingInstitutions:
+            for client in [bet_place_enums.BettingInstitutions.MERIDIAN]:
                 cls._process_matches(client, sport)
 
     @staticmethod
