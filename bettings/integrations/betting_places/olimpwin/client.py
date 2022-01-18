@@ -13,6 +13,8 @@ from selenium.webdriver.firefox import options
 
 from bettings import enums as betting_enums
 from bettings.integrations.betting_places import enums as bet_place_enums
+from bettings.integrations.betting_places import exceptions as betting_exceptions
+
 
 logger = logging.getLogger(__name__)
 _LOG_PREFIX = "[OLIMP_CLIENT]"
@@ -53,21 +55,23 @@ class OlimpSoccerClient(OlimpBaseClient):
             tournament_name = self._get_tournament_name(league)
 
             for match in self.get_league_matches(league):
-                player_home, player_away = self._get_match_players(match)
-                date_time = self._get_match_date_time(match)
-                bet_odds = self._get_match_odds(match)
+                try:
+                    player_home, player_away = self._get_match_players(match)
+                    date_time = self._get_match_date_time(match)
+                    bet_odds = self._get_match_odds(match)
 
-                match_odds = {
-                    "player_home": self._get_normalized_soccer_team_info(player_home),
-                    "player_away": self._get_normalized_soccer_team_info(player_away),
-                    "sport": betting_enums.Sports.FOOTBALL,
-                    "league": league_name,
-                    "tournament": tournament_name,
-                    "date_time": date_time,
-                    "bet_odds": bet_odds,
-                }
-                all_match_odds.append(match_odds)
-
+                    match_odds = {
+                        "player_home": self._get_normalized_soccer_team_info(player_home),
+                        "player_away": self._get_normalized_soccer_team_info(player_away),
+                        "sport": betting_enums.Sports.FOOTBALL,
+                        "league": league_name,
+                        "tournament": tournament_name,
+                        "date_time": date_time,
+                        "bet_odds": bet_odds,
+                    }
+                    all_match_odds.append(match_odds)
+                except betting_exceptions.XpathGeneralException:
+                    continue
         self.driver.close()
         return all_match_odds
 
@@ -81,8 +85,7 @@ class OlimpSoccerClient(OlimpBaseClient):
             cls._parse_match_odd(odd.text)
             for odd in driver_element.find_elements(By.XPATH, x_path)
         ]
-
-        if match_odds:
+        if len(match_odds) == 6:
             one, ex, two, oneex, extwo, onetwo = match_odds
             return {
                 bet_place_enums.FootballMatchPlays.ONE.value: one,
@@ -92,8 +95,8 @@ class OlimpSoccerClient(OlimpBaseClient):
                 bet_place_enums.FootballMatchPlays.XTWO.value: extwo,
                 bet_place_enums.FootballMatchPlays.ONETWO.value: onetwo,
             }
-
-        return {}
+        else:
+            raise betting_exceptions.XpathGeneralException()
 
     @staticmethod
     def get_league_matches(driver_element):
@@ -160,5 +163,12 @@ class OlimpSoccerClient(OlimpBaseClient):
         text = re.sub(' +', ' ', text)
         # convert all letters to lower case
         text = text.lower().strip()
-        text = sorted(text.split(' '), key=len)[-1]
-        return text
+        text = sorted(text.split(' '), key=len)
+        if len(text) >= 2:
+            first, second = text[-2:]
+            if len(first) == len(second):
+                return first + " " + second
+            else:
+                return second
+
+        return text[0]

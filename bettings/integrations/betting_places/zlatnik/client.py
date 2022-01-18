@@ -73,6 +73,9 @@ class ZlatnikSoccerClient(ZlatnikBaseClient):
                             all_match_odds.append(match_odds)
                         except betting_exceptions.XpathBaseException:
                             continue
+                        # Has to be changed to specific, just dirty fix
+                        except Exception as e:
+                            continue
                 except betting_exceptions.XpathBaseException:
                     continue
 
@@ -147,7 +150,7 @@ class ZlatnikSoccerClient(ZlatnikBaseClient):
 
         match_odds_all = parse_match_odds(odd_wrappers)
 
-        if match_odds_all:
+        if len(match_odds_all) == 6:
             one, ex, two, oneex, extwo, onetwo = match_odds_all
             return {
                 bet_place_enums.FootballMatchPlays.ONE.value: one,
@@ -157,6 +160,9 @@ class ZlatnikSoccerClient(ZlatnikBaseClient):
                 bet_place_enums.FootballMatchPlays.XTWO.value: extwo,
                 bet_place_enums.FootballMatchPlays.ONETWO.value: onetwo,
             }
+        else:
+            raise betting_exceptions.XpathGeneralException
+
         return {}
 
     @staticmethod
@@ -188,5 +194,12 @@ class ZlatnikSoccerClient(ZlatnikBaseClient):
         text = re.sub(' +', ' ', text)
         # convert all letters to lower case
         text = text.lower().strip()
-        text = sorted(text.split(' '), key=len)[-1]
-        return text
+        text = sorted(text.split(' '), key=len)
+        if len(text) >= 2:
+            first, second = text[-2:]
+            if len(first) == len(second):
+                return first + " " + second
+            else:
+                return second
+
+        return text[0]

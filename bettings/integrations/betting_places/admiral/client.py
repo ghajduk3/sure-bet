@@ -318,5 +318,12 @@ class AdmiralSoccerClient(AdmiralBaseClient):
         text = re.sub(' +', ' ', text)
         # convert all letters to lower case
         text = text.lower().strip()
-        text = sorted(text.split(' '), key=len)[-1]
-        return text
+        text = sorted(text.split(' '), key=len)
+        if len(text) >= 2:
+            first, second = text[-2:]
+            if len(first) == len(second):
+                return first + " " + second
+            else:
+                return second
+
+        return text[0]

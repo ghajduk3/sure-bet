@@ -5,7 +5,8 @@ from django.db.models import Q
 
 def find_match_by_filters(player_home, player_away, sport):
     return match.Match.objects.filter(
-        (Q(player_away=player_away) | Q(player_home=player_home)) & Q(sport=sport)
+        (Q(player_away=player_away) | Q(player_home=player_home)),
+        sport=sport,
     ).first()
 
 

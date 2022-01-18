@@ -35,6 +35,7 @@ class MatchProcessing:
                 if not existing_match:
                     continue
 
+            print("Match", existing_match.id, match.get('player_home'), match.get('player_away'), match_odds)
             odds_data_service.update_or_create_bet_odds(client, match_odds, existing_match.id)
 
 
