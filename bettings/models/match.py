@@ -12,9 +12,14 @@ class Match(models.Model):
     )
     league = models.CharField(max_length=150, blank=True, null=True)
     tournament = models.CharField(max_length=100, blank=True, null=True)
+    batch = models.IntegerField(null=True, default=0)
+    betting_institution = models.CharField(max_length=100, default='1')
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+
     class Meta:
         db_table = "sport_match"
+
+
