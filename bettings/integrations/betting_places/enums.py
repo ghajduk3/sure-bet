@@ -15,6 +15,7 @@ class BettingInstitutions(betting_enums.ChoiceEnums):
     OLIMPWIN = 1
     ZLATNIK = 2
     ADMIRAL = 3
+    MERIDIAN = 4
 
     def get_description(self):
         _descriptions = {
