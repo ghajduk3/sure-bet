@@ -14,24 +14,20 @@ from selenium.webdriver.firefox import options
 from bettings import enums as betting_enums
 from bettings.integrations.betting_places import enums as bet_place_enums
 from bettings.integrations.betting_places import exceptions as betting_exceptions
+from bettings.integrations.betting_places import base as base_integration
 
 
 logger = logging.getLogger(__name__)
 _LOG_PREFIX = "[OLIMP_CLIENT]"
 
 
-class OlimpBaseClient(object):
+class OlimpBaseClient(base_integration.IntegrationBaseClient):
     def __init__(self, sport, headless=True):
-        # type: (betting_enums.Sports) -> None
+        # type: (betting_enums.Sports, bool) -> None
+        super(OlimpBaseClient, self).__init__(headless)
         self.url = settings.CLIENT_SPORT_URLS[
             bet_place_enums.BettingInstitutions.OLIMPWIN.name.upper()
         ][sport.name.upper()]
-        self.driver = self._get_driver(headless)
-
-    def _get_driver(self, headless):
-        fireFoxOptions = options.Options()
-        fireFoxOptions.headless = headless
-        return webdriver.Firefox(options=fireFoxOptions, service=Service(GeckoDriverManager().install()))
 
 
 class OlimpSoccerClient(OlimpBaseClient):
@@ -42,7 +38,7 @@ class OlimpSoccerClient(OlimpBaseClient):
     def get_football_leagues(self):
         # type: () -> typing.Optional[typing.List]
         x_path = '//*[@id="ContentBody_ctl01_ucOffer_ucOdds_fullPonuda"]/div[@class="liga 2"]'
-        football_leagues = self.driver.find_elements(By.XPATH, x_path)
+        football_leagues = self._get_elements(self.driver, x_path)
         logger.info(
             "{} Found {} football leagues.".format(_LOG_PREFIX, len(football_leagues))
         )
@@ -83,7 +79,7 @@ class OlimpSoccerClient(OlimpBaseClient):
         # parse and return dict
         match_odds = [
             cls._parse_match_odd(odd.text)
-            for odd in driver_element.find_elements(By.XPATH, x_path)
+            for odd in cls._get_elements(driver_element, x_path)
         ]
         if len(match_odds) == 6:
             one, ex, two, oneex, extwo, onetwo = match_odds
@@ -98,45 +94,45 @@ class OlimpSoccerClient(OlimpBaseClient):
         else:
             raise betting_exceptions.XpathGeneralException()
 
-    @staticmethod
-    def get_league_matches(driver_element):
+    @classmethod
+    def get_league_matches(cls, driver_element):
         # type: () -> typing.Optional[typing.List]
         x_path = './/table[@class="parovi"]/tbody/tr[@ot]'
-        league_matches = driver_element.find_elements(By.XPATH, x_path)
+        league_matches = cls._get_elements(driver_element, x_path)
         logger.info(
             "{} Found {} league matches.".format(_LOG_PREFIX, len(league_matches))
         )
         return league_matches
 
-    @staticmethod
-    def _get_league_name(driver_element):
+    @classmethod
+    def _get_league_name(cls, driver_element):
         x_path = './/div[1]/table/tbody/tr/td[@class="grupa"]/span[2]'
-        return driver_element.find_element(By.XPATH, x_path).text
+        return cls._get_element(driver_element, x_path).text
 
-    @staticmethod
-    def _get_tournament_name(driver_element):
+    @classmethod
+    def _get_tournament_name(cls, driver_element):
         x_path = './/div[1]/table/tbody/tr/td[@class="grupa"]/span[3]'
-        return driver_element.find_element(By.XPATH, x_path).text
+        return cls._get_element(driver_element, x_path).text
 
-    @staticmethod
-    def _get_match_players(driver_element):
+    @classmethod
+    def _get_match_players(cls, driver_element):
         x_path = "./td[@title]"
         # parse this to get both match players
-        players = driver_element.find_element(By.XPATH, x_path).text
+        players = cls._get_element(driver_element, x_path).text
         if players:
             home_player, away_player = players.split(" - ")
             return home_player, away_player
 
         return players
 
-    @staticmethod
-    def _get_match_date_time(driver_element):
+    @classmethod
+    def _get_match_date_time(cls, driver_element):
         x_path_time = './td[@class="datumPar"]'
         x_path_date = '//td[@class="cal current"]'
         # Get date and combine
-        match_time_raw = driver_element.find_element(By.XPATH, x_path_time).text
-        match_date_raw = driver_element.find_element(
-            By.XPATH, x_path_date
+        match_time_raw = cls._get_element(driver_element, x_path_time).text
+        match_date_raw = cls._get_element(
+            driver_element, x_path_date
         ).get_attribute("onclick")
         if match_time_raw and match_date_raw:
             parsed_date_time = re.findall("\d{1,2}.\d{1,2}.\d{1,4}", match_date_raw)[
@@ -155,20 +151,3 @@ class OlimpSoccerClient(OlimpBaseClient):
     @staticmethod
     def _parse_match_odd(odd):
         return float(odd.replace(",", "."))
-
-    @staticmethod
-    def _get_normalized_soccer_team_info(team_name):
-        text = re.sub(r"[^a-zA-Z0-9\sčČšŠžŽ]", "", team_name)
-        # remove multiple white spaces
-        text = re.sub(' +', ' ', text)
-        # convert all letters to lower case
-        text = text.lower().strip()
-        text = sorted(text.split(' '), key=len)
-        if len(text) >= 2:
-            first, second = text[-2:]
-            if len(first) == len(second):
-                return first + " " + second
-            else:
-                return second
-
-        return text[0]
