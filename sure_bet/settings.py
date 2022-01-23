@@ -146,4 +146,7 @@ CLIENT_SPORT_URLS = {
     'VOLCANO': {
         'FOOTBALL': 'https://www.volcanobet.me/prematch/1',
     },
+    'SBBET': {
+        'FOOTBALL': 'https://sbbet.me/sport?&event_type=upcoming',
+    },
 }
