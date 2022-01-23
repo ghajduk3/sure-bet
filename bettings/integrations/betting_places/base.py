@@ -13,6 +13,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox import options
 from selenium.webdriver.support import select
+from abc import ABC, abstractmethod
 
 
 
@@ -21,10 +22,9 @@ from bettings.integrations.betting_places import enums as bet_place_enums
 from bettings.integrations.betting_places import exceptions as betting_exceptions
 
 logger = logging.getLogger(__name__)
-_LOG_PREFIX = "[ZLATNIK_CLIENT]"
 
 
-class IntegrationBaseClient(object):
+class IntegrationBaseClient(ABC):
 
     def __init__(self, headless=True):
         self.driver = self._get_driver(headless)
@@ -33,6 +33,10 @@ class IntegrationBaseClient(object):
         driver_options = options.Options()
         driver_options.headless = headless
         return webdriver.Firefox(options=driver_options, service=Service(GeckoDriverManager().install()))
+
+    @abstractmethod
+    def get_matches_odds_all(self):
+        raise NotImplemented
 
     @staticmethod
     def _get_element(driver, x_path):
