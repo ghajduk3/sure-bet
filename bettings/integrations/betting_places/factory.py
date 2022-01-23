@@ -12,6 +12,7 @@ from bettings.integrations.betting_places.admiral import client as admiral_clien
 from bettings.integrations.betting_places.meridian import client as meridian_client
 from bettings.integrations.betting_places.zlatnik.client import ZlatnikSoccerClient
 from bettings.integrations.betting_places.volcano import client as volcano_client
+from bettings.integrations.betting_places.sbbet import client as sbb_client
 
 logger = logging.getLogger(__name__)
 _LOG_PREFIX = "[CLIENT_FACTORY]"
@@ -26,6 +27,7 @@ class Factory:
             bet_place_enums.BettingInstitutions.ADMIRAL: admiral_client.AdmiralSoccerClient,
             bet_place_enums.BettingInstitutions.MERIDIAN: meridian_client.MeridianSoccerClient,
             bet_place_enums.BettingInstitutions.VOLCANO: volcano_client.VolcanoSoccerClient,
+            bet_place_enums.BettingInstitutions.SBBET: sbb_client.SbbetSoccerClient,
         }
     }
 

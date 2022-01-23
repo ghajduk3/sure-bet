@@ -137,13 +137,14 @@ class VolcanoSoccerClient(VolcanoBaseClient):
             oneex, extwo, onetwo = [cls._parse_odd(odd.get_attribute('innerHTML')) for odd in double_chance_odds]
 
             return {
-                bet_place_enums.FootballMatchPlays.ONE.value: float(one),
-                bet_place_enums.FootballMatchPlays.X.value: float(ex),
-                bet_place_enums.FootballMatchPlays.TWO.value: float(two),
-                bet_place_enums.FootballMatchPlays.ONEX.value: float(oneex),
-                bet_place_enums.FootballMatchPlays.XTWO.value: float(extwo),
-                bet_place_enums.FootballMatchPlays.ONETWO.value: float(onetwo),
+                bet_place_enums.FootballMatchPlays.ONE.value: one,
+                bet_place_enums.FootballMatchPlays.X.value: ex,
+                bet_place_enums.FootballMatchPlays.TWO.value: two,
+                bet_place_enums.FootballMatchPlays.ONEX.value: oneex,
+                bet_place_enums.FootballMatchPlays.XTWO.value: extwo,
+                bet_place_enums.FootballMatchPlays.ONETWO.value: onetwo,
             }
+        return {}
 
     @staticmethod
     def _parse_odd(odd):
