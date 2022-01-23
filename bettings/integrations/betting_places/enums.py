@@ -16,11 +16,14 @@ class BettingInstitutions(betting_enums.ChoiceEnums):
     ZLATNIK = 2
     ADMIRAL = 3
     MERIDIAN = 4
+    VOLCANO = 5
 
     def get_description(self):
         _descriptions = {
             self.OLIMPWIN: "OLIMP",
             self.ZLATNIK: "ZLATNIK",
             self.ADMIRAL: "ADMIRAL",
+            self.MERIDIAN: "MERIDIAN",
+            self.VOLCANO: "VOLCANO",
         }
         return _descriptions.get(self)

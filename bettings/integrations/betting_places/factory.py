@@ -11,6 +11,7 @@ from bettings.integrations.betting_places.olimpwin import client as olimp_client
 from bettings.integrations.betting_places.admiral import client as admiral_client
 from bettings.integrations.betting_places.meridian import client as meridian_client
 from bettings.integrations.betting_places.zlatnik.client import ZlatnikSoccerClient
+from bettings.integrations.betting_places.volcano import client as volcano_client
 
 logger = logging.getLogger(__name__)
 _LOG_PREFIX = "[CLIENT_FACTORY]"
@@ -24,11 +25,12 @@ class Factory:
             bet_place_enums.BettingInstitutions.ZLATNIK: zlatnik_client.ZlatnikSoccerClient,
             bet_place_enums.BettingInstitutions.ADMIRAL: admiral_client.AdmiralSoccerClient,
             bet_place_enums.BettingInstitutions.MERIDIAN: meridian_client.MeridianSoccerClient,
+            bet_place_enums.BettingInstitutions.VOLCANO: volcano_client.VolcanoSoccerClient,
         }
     }
 
     def create(self, client, sport):
-        # type: (bet_place_enums.BettingInstitutions, betting_enums.Sports) -> Union[OlimpSoccerClient, ZlatnikSoccerClient, AdmiralSoccerClient]
+        # type: (bet_place_enums.BettingInstitutions, betting_enums.Sports) -> Union[OlimpSoccerClient, ZlatnikSoccerClient, AdmiralSoccerClient, ]
 
         # TODO: Add clients constants
         sport_clients = self._client_sport_mapping.get(sport)

@@ -142,5 +142,8 @@ CLIENT_SPORT_URLS = {
     },
     'MERIDIAN': {
         'FOOTBALL': 'https://meridianbet.me/sr/kladjenje/fudbal',
-    }
+    },
+    'VOLCANO': {
+        'FOOTBALL': 'https://www.volcanobet.me/prematch/1',
+    },
 }

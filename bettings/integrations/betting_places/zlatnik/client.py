@@ -19,7 +19,7 @@ from bettings.integrations.betting_places import exceptions as betting_exception
 from bettings.integrations.betting_places import base as base_integration
 
 logger = logging.getLogger(__name__)
-_LOG_PREFIX = "[ZLATNIK_CLIENT]"
+_LOG_PREFIX = "[ZLATNIK-CLIENT]"
 
 
 class ZlatnikBaseClient(base_integration.IntegrationBaseClient):
