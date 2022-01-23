@@ -25,7 +25,7 @@ _LOG_PREFIX = "[SBBET-CLIENT]"
 
 
 class SbbetBaseClient(base_integration.IntegrationBaseClient):
-    def __init__(self, sport, headless=True):
+    def __init__(self, sport, headless=False):
         # type: (betting_enums.Sports, bool) -> None
         super(SbbetBaseClient, self).__init__(headless)
         self.url = settings.CLIENT_SPORT_URLS[
@@ -85,36 +85,44 @@ class SbbetSoccerClient(SbbetBaseClient):
     def get_matches_odds_all(self):
         match_date = None
         all_match_odds = []
-        for match in self._get_all_matches(self.driver):
-            match_details = self._get_element(match, "./div[1]")
-            if "row" not in match_details.get_attribute("class"):
-                match_date = match_details.get_attribute('innerHTML')
-                logger.info("{} Match date found!".format(_LOG_PREFIX))
-                continue
+        matches = self._get_all_matches(self.driver)
+        new_position = int(matches[-1].get_attribute("data-index"))
+        current_scroll_position = 0
+        while new_position != current_scroll_position:
+            for match in matches:
+                match_details = self._get_element(match, "./div[1]")
+                if "row" not in match_details.get_attribute("class"):
+                    match_date = match_details.get_attribute('innerHTML')
+                    logger.info("{} Match date found!".format(_LOG_PREFIX))
+                    continue
 
-            try:
-                match_time = self._get_match_time(match_details)
-                bet_odds = self._get_match_odds(match_details)
-                match_date_time = self._combine_match_date_time(match_date, match_time)
-                player_home, player_away = self._get_players(match_details)
+                try:
+                    match_time = self._get_match_time(match_details)
+                    bet_odds = self._get_match_odds(match_details)
+                    match_date_time = self._combine_match_date_time(match_date, match_time)
+                    player_home, player_away = self._get_players(match_details)
 
-                match_details = {
-                    "player_home": self._get_normalized_soccer_team_info(player_home),
-                    "player_away": self._get_normalized_soccer_team_info(player_away),
-                    "sport": betting_enums.Sports.FOOTBALL,
-                    "league": '',
-                    "tournament": '',
-                    "date_time": match_date_time,
-                    "bet_odds": bet_odds,
-                }
-                all_match_odds.append(match_details)
-            except (betting_exceptions.XpathElementNotFoundException, betting_exceptions.XpathElementsNotFoundError):
-                continue
-            except betting_exceptions.XpathGeneralException:
-                continue
-            except Exception:
-                # temporary. Has to be changed
-                continue
+                    match_details = {
+                        "player_home": self._get_normalized_soccer_team_info(player_home),
+                        "player_away": self._get_normalized_soccer_team_info(player_away),
+                        "sport": betting_enums.Sports.FOOTBALL,
+                        "league": '',
+                        "tournament": '',
+                        "date_time": match_date_time,
+                        "bet_odds": bet_odds,
+                    }
+                    all_match_odds.append(match_details)
+                except (betting_exceptions.XpathElementNotFoundException, betting_exceptions.XpathElementsNotFoundError):
+                    continue
+                except betting_exceptions.XpathGeneralException:
+                    continue
+                except Exception:
+                    # temporary. Has to be changed
+                    continue
+            current_scroll_position = new_position
+            self._scroll_page_down(self.driver, current_scroll_position)
+            matches = self._get_all_matches(self.driver)
+            new_position = int(matches[-1].get_attribute("data-index"))
         self.driver.close()
         return all_match_odds
 
@@ -140,6 +148,10 @@ class SbbetSoccerClient(SbbetBaseClient):
 
         return {}
 
+    @classmethod
+    def _scroll_page_down(cls, driver_element, position):
+        x_path = '//div[@class="sport__content"]/div[@class="sport__table-wrapper"]//div[@class="offer"]/div[1]/div[1]/div[1]//div[@data-index="{}"]'.format(position)
+        driver_element.execute_script("arguments[0].scrollIntoView();", cls._get_element(driver_element, x_path))
 
     @classmethod
     def _get_match_time(cls, driver_element):
