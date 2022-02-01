@@ -136,7 +136,7 @@ class SbbetSoccerClient(SbbetBaseClient):
 
         if len(base_odds) == 3 and len(double_chance_odds) == 3:
             one, ex, two = base_odds
-            oneex, extwo, onetwo = double_chance_odds
+            oneex, onetwo, extwo = double_chance_odds
             return {
                 bet_place_enums.FootballMatchPlays.ONE.value: float(one),
                 bet_place_enums.FootballMatchPlays.X.value: float(ex),
