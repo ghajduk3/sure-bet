@@ -135,7 +135,7 @@ CLIENT_SPORT_URLS = {
         'FOOTBALL': 'https://olimpwin.com/sports/?t=-60#2/0/0/0/'
     },
     'ZLATNIK': {
-        'FOOTBALL': 'https://www.zlatnik.me/srl/sports-betting/offer/fudbal?hours=24'
+        'FOOTBALL': 'https://www.zlatnik.me/srl/sports-betting/offer/fudbal?hours={}'
     },
     'ADMIRAL': {
         'FOOTBALL': 'https://www.admiralbet.me/sport-prematch?sport=Fudbal',

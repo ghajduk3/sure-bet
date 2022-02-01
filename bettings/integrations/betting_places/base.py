@@ -35,7 +35,7 @@ class IntegrationBaseClient(ABC):
         return webdriver.Firefox(options=driver_options, service=Service(GeckoDriverManager().install()))
 
     @abstractmethod
-    def get_matches_odds_all(self):
+    def get_matches_odds_all(self, days=1):
         raise NotImplemented
 
     @staticmethod

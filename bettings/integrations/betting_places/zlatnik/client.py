@@ -34,8 +34,6 @@ class ZlatnikBaseClient(base_integration.IntegrationBaseClient):
 class ZlatnikSoccerClient(ZlatnikBaseClient):
     def __init__(self):
         super(ZlatnikSoccerClient, self).__init__(betting_enums.Sports.FOOTBALL)
-        self.driver.get(self.url)
-        time.sleep(5)
 
     def _get_football_leagues(self):
         # type: () -> typing.Optional[typing.List]
@@ -46,7 +44,11 @@ class ZlatnikSoccerClient(ZlatnikBaseClient):
         )
         return football_leagues
 
-    def get_matches_odds_all(self):
+    def get_matches_odds_all(self, days=3):
+        self._switch_to_days(days)
+        return self.get_matches_odds()
+
+    def get_matches_odds(self):
         all_match_odds = []
         for league in self._get_football_leagues():
             for tournament in self._get_football_tournaments(league):
@@ -77,6 +79,11 @@ class ZlatnikSoccerClient(ZlatnikBaseClient):
 
         self.driver.close()
         return all_match_odds
+
+    def _switch_to_days(self, days):
+        hours = days * 24
+        self.driver.get(self.url.format(hours))
+        time.sleep(5)
 
     @classmethod
     def _get_football_tournaments(cls, driver_element):
