@@ -48,7 +48,7 @@ class ArbitrageBets:
         game_odds_mapping = self._game_odds_mapping[sport]
 
         all_matches = matches_service.find_matches_by_sport(sport=sport, date=datetime.date.today())
-
+        all_arbitrages = []
         for match in all_matches:
             bet_odd_object = odds_service.find_odds_by_match(match.id)
             raw_match_odds = {odd.betting_institution: odd.odds for odd in list(bet_odd_object)}
@@ -56,35 +56,29 @@ class ArbitrageBets:
             prepared_odds = self._prepare_odds(raw_match_odds)
 
             for game in possible_games:
-                (first_game, first_max_bet, first_index), (second_game,second_max_bet, second_index) = self._get_maximum_odds(prepared_odds, game, game_odds_mapping)
-                tap = self._calculate_TAP(first_max_bet, second_max_bet)
-                self._report_arbitrage_bet(
-                    match,
-                    tap,
-                    first_game,
-                    first_max_bet,
-                    bet_place_enums.BettingInstitutions(institutions[first_index]).name,
-                    second_game,
-                    second_max_bet,
-                    bet_place_enums.BettingInstitutions(institutions[second_index]).name,
-                )
-                if tap < 98:
-                    print("Arbitrage is possible, TAP: {}! Home player {}, Away player {}, game ({}-{}), bet_place ({}-{}), max_odds ({}-{}), odds {}".format(
+                try:
+                    (first_game, first_max_bet, first_index), (second_game,second_max_bet, second_index) = self._get_maximum_odds(prepared_odds, game, game_odds_mapping)
+                    tap = self._calculate_TAP(first_max_bet, second_max_bet)
+                    arb_bet = self._report_arbitrage_bet(
+                        match,
                         tap,
-                        match.player_home,
-                        match.player_away,
-                        first_game.name,
-                        second_game.name,
-                        bet_place_enums.BettingInstitutions(institutions[first_index]).name,
-                        bet_place_enums.BettingInstitutions(institutions[second_index]).name,
+                        first_game,
                         first_max_bet,
+                        bet_place_enums.BettingInstitutions(institutions[first_index]).name,
+                        second_game,
                         second_max_bet,
-                        prepared_odds
-                        )
+                        bet_place_enums.BettingInstitutions(institutions[second_index]).name,
                     )
+                    if arb_bet:
+                        all_arbitrages.append(arb_bet)
+                except Exception:
+                    continue
+
+        return all_arbitrages
 
     def _report_arbitrage_bet(self, match, tap, first_game, first_max_bet, first_bet_place, second_game, second_max_bet, second_bet_place):
         arbitrage_bet = {
+            'TAP': tap,
             'home_player': match.player_home,
             'away_player': match.player_away,
             'date_time': match.date_time,
@@ -95,7 +89,8 @@ class ArbitrageBets:
         }
 
         if tap < 98:
-            logger.info("{} Arbitrage is possible. {}".format(_LOG_PREFIX, json.dumps(arbitrage_bet)))
+            print(arbitrage_bet)
+            # logger.info("{} Arbitrage is possible. {}".format(_LOG_PREFIX, json.dumps(arbitrage_bet)))
             return arbitrage_bet
 
         return None

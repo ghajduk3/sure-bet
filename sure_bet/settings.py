@@ -149,4 +149,7 @@ CLIENT_SPORT_URLS = {
     'SBBET': {
         'FOOTBALL': 'https://sbbet.me/sport?&event_type=upcoming',
     },
+    'PREMIER': {
+        'FOOTBALL': 'https://www.premierbet.me/sport/football-betting',
+    },
 }

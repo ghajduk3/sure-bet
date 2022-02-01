@@ -26,7 +26,7 @@ _LOG_PREFIX = "[MERIDIAN_CLIENT]"
 
 
 class MeridianBaseClient(base_integration.IntegrationBaseClient):
-    def __init__(self, sport, headless=True):
+    def __init__(self, sport, headless=False):
         # type: (betting_enums.Sports, bool) -> None
         super(MeridianBaseClient, self).__init__(headless)
         self.url = settings.CLIENT_SPORT_URLS[
