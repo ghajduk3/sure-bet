@@ -135,7 +135,7 @@ CLIENT_SPORT_URLS = {
         'FOOTBALL': 'https://olimpwin.com/sports/?t=-60#2/0/0/0/'
     },
     'ZLATNIK': {
-        'FOOTBALL': 'https://www.zlatnik.me/srl/sports-betting/offer/fudbal?hours=24'
+        'FOOTBALL': 'https://www.zlatnik.me/srl/sports-betting/offer/fudbal?hours={}'
     },
     'ADMIRAL': {
         'FOOTBALL': 'https://www.admiralbet.me/sport-prematch?sport=Fudbal',
@@ -144,7 +144,7 @@ CLIENT_SPORT_URLS = {
         'FOOTBALL': 'https://meridianbet.me/sr/kladjenje/fudbal',
     },
     'VOLCANO': {
-        'FOOTBALL': 'https://www.volcanobet.me/prematch/1',
+        'FOOTBALL': 'https://www.volcanobet.me/prematch/1?time-filter={}',
     },
     'SBBET': {
         'FOOTBALL': 'https://sbbet.me/sport?&event_type=upcoming',

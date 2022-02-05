@@ -60,11 +60,10 @@ class PremierSoccerClient(PremierBaseClient):
 
     def get_matches_odds_all(self):
         all_matches = self._get_all_matches(self.driver)
-        current_scroll_position = ''
+        current_scroll_position = None
         new_scroll_position_elmnt = all_matches[-1]
-        new_scroll_position = new_scroll_position_elmnt.get_attribute("class")
         all_match_odds = []
-        while current_scroll_position != new_scroll_position:
+        while current_scroll_position != new_scroll_position_elmnt:
             for match in all_matches:
                 match_details = self._get_match_details(match)
 
@@ -93,11 +92,15 @@ class PremierSoccerClient(PremierBaseClient):
                 except Exception:
                     # temporary. Has to be changed
                     continue
-            self.driver.execute_script("arguments[0].scrollIntoView();", new_scroll_position_elmnt)
-            current_scroll_position = new_scroll_position
+
+            current_scroll_position = new_scroll_position_elmnt
+
+            self.driver.execute_script("arguments[0].scrollIntoView();", current_scroll_position)
+            time.sleep(1)
+
             all_matches = self._get_all_matches(self.driver)
             new_scroll_position_elmnt = all_matches[-1]
-            new_scroll_position = new_scroll_position_elmnt.get_attribute("class")
+
             
         self.driver.close()
         return all_match_odds

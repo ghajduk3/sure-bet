@@ -23,6 +23,9 @@ class MatchProcessing:
         for match in all_match_odds:
             match_odds = match.pop('bet_odds', {})
             match_created = matches_data_service.get_or_create_match(match, self._batch, client.value)
+
+            if not match_created:
+                continue
             odds_data_service.update_or_create_bet_odds(client, match_odds, match_created.id)
             logger.info("{} Processed match id={}.".format(_LOG_PREFIX, match_created.id))
 
