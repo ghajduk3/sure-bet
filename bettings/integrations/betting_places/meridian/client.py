@@ -45,45 +45,59 @@ class MeridianSoccerClient(MeridianBaseClient):
         time.sleep(1)
         self.driver.execute_script("arguments[0].click();", self._get_element(self.driver, '//*[@id="sidebar"]/div/active-sidebar-sport-component/div/div[1]/a'))
         time.sleep(1)
-        all_elements_wrapper = self._get_elements(self.driver,'//div[@id="events"]/*',)
+
 
         position = 0
         all_match_odds = []
-        for index, event in enumerate(all_elements_wrapper[position:]):
-            time.sleep(1)
-            event_type = event.get_attribute('id')
-            print("Events ({}), ({}), ({}), ({})".format(index, event_type, event.get_attribute('class'), len(all_elements_wrapper)))
-            if "matches" in event_type:
-                match_position = 0
 
-                for match_counter, match in enumerate(all_elements_wrapper[index+1:]):
-                    if "event" not in match.get_attribute("class"):
-                        break
-                    try:
-                        match_date_time = self._get_match_date_time(match)
-                        league_name, tournament_name= self._get_league_tournament(match)
-                        player_home, player_away = self._get_players(match)
-                        bet_odds = self._get_match_odds(match)
-                        print("League_name", league_name)
+        all_elements_wrapper = self._get_elements(self.driver, '//div[@id="events"]/*', )
+        new_position_element = all_elements_wrapper[-1]
+        current_scroll_position_element = None
 
-                        match_odds = {
-                            "player_home": self._get_normalized_soccer_team_info(player_home),
-                            "player_away": self._get_normalized_soccer_team_info(player_away),
-                            "sport": betting_enums.Sports.FOOTBALL,
-                            "league": league_name,
-                            "tournament": tournament_name,
-                            "date_time": match_date_time,
-                            "bet_odds": bet_odds,
-                        }
-                        all_match_odds.append(match_odds)
-                    except betting_exceptions.XpathElementsNotFoundError:
-                        continue
-                    except Exception:
-                        continue
-                    match_position = match_counter
+        while new_position_element != current_scroll_position_element:
+            for index, event in enumerate(all_elements_wrapper[position:]):
                 time.sleep(1)
-                print("Fetched matches", position, len(all_match_odds))
-                position += match_position
+                event_type = event.get_attribute('id')
+                print("Events ({}), ({}), ({}), ({})".format(index, event_type, event.get_attribute('class'), len(all_elements_wrapper)))
+                if "matches" in event_type:
+                    match_position = 0
+
+                    for match_counter, match in enumerate(all_elements_wrapper[index+1:]):
+                        if "event" not in match.get_attribute("class"):
+                            break
+                        try:
+                            match_date_time = self._get_match_date_time(match)
+                            league_name, tournament_name= self._get_league_tournament(match)
+                            player_home, player_away = self._get_players(match)
+                            bet_odds = self._get_match_odds(match)
+                            print("League_name", league_name)
+
+                            match_odds = {
+                                "player_home": self._get_normalized_soccer_team_info(player_home),
+                                "player_away": self._get_normalized_soccer_team_info(player_away),
+                                "sport": betting_enums.Sports.FOOTBALL,
+                                "league": league_name,
+                                "tournament": tournament_name,
+                                "date_time": match_date_time,
+                                "bet_odds": bet_odds,
+                            }
+                            all_match_odds.append(match_odds)
+                        except betting_exceptions.XpathElementsNotFoundError:
+                            continue
+                        except Exception:
+                            continue
+                        match_position = match_counter
+                    time.sleep(1)
+                    print("Fetched matches", position, len(all_match_odds))
+                    position += match_position
+
+            current_scroll_position_element = new_position_element
+            self._scroll_page_down(self.driver, current_scroll_position_element)
+
+            all_elements_wrapper = self._get_elements(self.driver, '//div[@id="events"]/*', )
+            new_position_element = all_elements_wrapper[-1]
+
+        self.driver.close()
         return all_match_odds
 
     def _get_match_odds(self, driver_element):
@@ -93,6 +107,7 @@ class MeridianSoccerClient(MeridianBaseClient):
         )
 
         action_chains.ActionChains(self.driver).move_to_element(game_option_names).perform()
+        time.sleep(0.5)
 
         options = game_names[0].find_elements(
             By.XPATH, './div[contains(@class, "dropdown")]/div[1]/div'
@@ -102,6 +117,7 @@ class MeridianSoccerClient(MeridianBaseClient):
         double_chance = options[1]
         # self.driver.execute_script("arguments[0].click();", base_games)
         action_chains.ActionChains(self.driver).move_to_element(base_games).click().perform()
+        time.sleep(0.5)
         # base_games.click()
 
         base_odds = [self._parse_odd(odd.get_attribute("innerHTML")) for odd in self._get_elements(
@@ -119,8 +135,8 @@ class MeridianSoccerClient(MeridianBaseClient):
 
         # Switch to double chance so able to grab other odds
         # self.driver.execute_script("arguments[0].click();", double_chance)
-        time.sleep(1)
         action_chains.ActionChains(self.driver).move_to_element(double_chance).click().perform()
+        time.sleep(1)
         double_chance_odds = [
             self._parse_odd(odd.get_attribute("innerHTML"))
             for odd in self._get_elements(
@@ -143,6 +159,11 @@ class MeridianSoccerClient(MeridianBaseClient):
             bet_place_enums.FootballMatchPlays.XTWO.value: float(extwo),
             bet_place_enums.FootballMatchPlays.ONETWO.value: float(onetwo),
         }
+
+    @classmethod
+    def _scroll_page_down(cls, driver_element, element):
+        driver_element.execute_script("arguments[0].scrollIntoView();", element)
+        time.sleep(3)
 
     @classmethod
     def _get_players(cls, driver_element):

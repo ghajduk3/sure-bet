@@ -52,7 +52,7 @@ class SbbetSoccerClient(SbbetBaseClient):
 
     @classmethod
     def _change_page_time_frame(cls, driver_element):
-        time_filter_xpath = '//div[@class="sports-time-filter"]/span[3]'
+        time_filter_xpath = '//div[@class="sports-time-filter"]/span[4]'
         try:
             time_filter = cls._get_element(driver_element,
                 time_filter_xpath,
@@ -82,7 +82,7 @@ class SbbetSoccerClient(SbbetBaseClient):
             driver_element, x_path_double_chance_switch
         ).click()
 
-    def get_matches_odds_all(self):
+    def get_matches_odds_all(self, days=3):
         match_date = None
         all_match_odds = []
         matches = self._get_all_matches(self.driver)
@@ -152,6 +152,7 @@ class SbbetSoccerClient(SbbetBaseClient):
     def _scroll_page_down(cls, driver_element, position):
         x_path = '//div[@class="sport__content"]/div[@class="sport__table-wrapper"]//div[@class="offer"]/div[1]/div[1]/div[1]//div[@data-index="{}"]'.format(position)
         driver_element.execute_script("arguments[0].scrollIntoView();", cls._get_element(driver_element, x_path))
+        time.sleep(3)
 
     @classmethod
     def _get_match_time(cls, driver_element):

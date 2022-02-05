@@ -11,7 +11,7 @@ from selenium.common import exceptions as selenium_exceptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.firefox import options
-
+from selenium.webdriver.common import action_chains
 
 from bettings import enums as betting_enums
 from bettings.integrations.betting_places import enums as bet_place_enums
@@ -23,7 +23,7 @@ _LOG_PREFIX = "[ZLATNIK-CLIENT]"
 
 
 class ZlatnikBaseClient(base_integration.IntegrationBaseClient):
-    def __init__(self, sport, headless=True):
+    def __init__(self, sport, headless=False):
         # type: (betting_enums.Sports, bool) -> None
         super(ZlatnikBaseClient, self).__init__(headless)
         self.url = settings.CLIENT_SPORT_URLS[
@@ -50,32 +50,47 @@ class ZlatnikSoccerClient(ZlatnikBaseClient):
 
     def get_matches_odds(self):
         all_match_odds = []
-        for league in self._get_football_leagues():
-            for tournament in self._get_football_tournaments(league):
-                try:
-                    league_name, tournament_name = self._get_league_tournament_name(tournament)
-                    for match in self._get_tournament_matches(tournament):
-                        try:
-                            player_home, player_away = self._get_match_players(match)
-                            date_time = self._get_match_date_time(match)
-                            bet_odds = self._get_match_odds(match)
-                            match_odds = {
-                                "player_home": self._get_normalized_soccer_team_info(player_home),
-                                "player_away": self._get_normalized_soccer_team_info(player_away),
-                                "sport": betting_enums.Sports.FOOTBALL,
-                                "league": league_name,
-                                "tournament": tournament_name,
-                                "date_time": date_time,
-                                "bet_odds": bet_odds,
-                            }
-                            all_match_odds.append(match_odds)
-                        except betting_exceptions.XpathBaseException:
-                            continue
-                        # Has to be changed to specific, just dirty fix
-                        except Exception as e:
-                            continue
-                except betting_exceptions.XpathBaseException:
-                    continue
+        all_leagues = self._get_football_leagues()
+        new_position_element = all_leagues[-1]
+        current_scroll_position_element = None
+
+        while new_position_element != current_scroll_position_element:
+            print("Start fetching")
+
+            for league in all_leagues:
+                for tournament in self._get_football_tournaments(league):
+                    try:
+                        league_name, tournament_name = self._get_league_tournament_name(tournament)
+                        for match in self._get_tournament_matches(tournament):
+                            try:
+                                player_home, player_away = self._get_match_players(match)
+                                date_time = self._get_match_date_time(match)
+                                bet_odds = self._get_match_odds(match)
+                                match_odds = {
+                                    "player_home": self._get_normalized_soccer_team_info(player_home),
+                                    "player_away": self._get_normalized_soccer_team_info(player_away),
+                                    "sport": betting_enums.Sports.FOOTBALL,
+                                    "league": league_name,
+                                    "tournament": tournament_name,
+                                    "date_time": date_time,
+                                    "bet_odds": bet_odds,
+                                }
+                                all_match_odds.append(match_odds)
+                            except betting_exceptions.XpathBaseException:
+                                continue
+                            # Has to be changed to specific, just dirty fix
+                            except Exception as e:
+                                continue
+                    except betting_exceptions.XpathBaseException:
+                        continue
+
+            current_scroll_position_element = new_position_element
+            self._scroll_page_down(self.driver, current_scroll_position_element)
+
+            time.sleep(5)
+            all_leagues = self._get_football_leagues()
+            new_position_element = all_leagues[-1]
+            print("Current, previous", new_position_element == current_scroll_position_element)
 
         self.driver.close()
         return all_match_odds
@@ -84,6 +99,11 @@ class ZlatnikSoccerClient(ZlatnikBaseClient):
         hours = days * 24
         self.driver.get(self.url.format(hours))
         time.sleep(5)
+
+    @classmethod
+    def _scroll_page_down(cls, driver_element, element):
+        # action_chains.ActionChains(driver_element).move_to_element(element).perform()
+        driver_element.execute_script("arguments[0].scrollIntoView();", element)
 
     @classmethod
     def _get_football_tournaments(cls, driver_element):

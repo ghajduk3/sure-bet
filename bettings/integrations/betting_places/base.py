@@ -32,6 +32,7 @@ class IntegrationBaseClient(ABC):
     def _get_driver(self, headless):
         driver_options = options.Options()
         driver_options.headless = headless
+        driver_options.add_argument("window-size=2000,2000")
         return webdriver.Firefox(options=driver_options, service=Service(GeckoDriverManager().install()))
 
     @abstractmethod

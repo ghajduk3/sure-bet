@@ -25,7 +25,7 @@ _LOG_PREFIX = "[VOLCANO-CLIENT]"
 
 
 class VolcanoBaseClient(base_integration.IntegrationBaseClient):
-    def __init__(self, sport, headless=True):
+    def __init__(self, sport, headless=False):
         # type: (betting_enums.Sports, bool) -> None
         super(VolcanoBaseClient, self).__init__(headless)
         self.url = settings.CLIENT_SPORT_URLS[
@@ -36,45 +36,84 @@ class VolcanoBaseClient(base_integration.IntegrationBaseClient):
 class VolcanoSoccerClient(VolcanoBaseClient):
     def __init__(self):
         super(VolcanoSoccerClient, self).__init__(betting_enums.Sports.FOOTBALL)
-        self.driver.get(self.url)
-        time.sleep(5)
 
-    def get_matches_odds_all(self):
+    def get_matches_odds_all(self, days=2):
         all_match_odds = []
-        for league in self._get_all_leagues(self.driver):
-            for tournament in self._get_all_tournaments(league):
-                league_name = self._get_league_name(tournament)
+        for day in range(days):
+            self._switch_to_date(day+1)
+            all_match_odds.extend(self.get_matches_odds())
+
+        self.driver.close()
+        return all_match_odds
+
+    def get_matches_odds(self):
+        all_match_odds = []
+
+        all_leagues = self._get_all_leagues(self.driver)
+        new_position_element = all_leagues[-1]
+        current_scroll_position_element = None
+        position = 0
+        while new_position_element != current_scroll_position_element:
+            match_position = 0
+            for index, league in enumerate(all_leagues[position:]):
                 try:
-                    matches = self._get_all_matches(tournament)
-                except betting_exceptions.XpathElementsNotFoundError:
-                    continue
-                except betting_exceptions.XpathGeneralException:
-                    continue
-                time.sleep(1)
-                league_date = self._get_match_date(tournament)
-
-                for match in matches:
+                    tournaments = self._get_all_tournaments(league)
+                except Exception as e:
+                    print("Tournament stale")
+                    self._scroll_page_down(self.driver, current_scroll_position_element)
+                    break
+                for tournament in tournaments:
                     try:
-                        player_home, player_away = self._get_players(match)
-                        match_date_time = self._combine_match_date_time(league_date, self._get_match_time(match))
-                        bet_odds = self._get_match_odds(match)
-
-                        match_details = {
-                            "player_home": self._get_normalized_soccer_team_info(player_home),
-                            "player_away": self._get_normalized_soccer_team_info(player_away),
-                            "sport": betting_enums.Sports.FOOTBALL,
-                            "league": league_name,
-                            "tournament": '',
-                            "date_time": match_date_time,
-                            "bet_odds": bet_odds,
-                        }
-                        all_match_odds.append(match_details)
-                    except (betting_exceptions.XpathElementNotFoundException, betting_exceptions.XpathElementNotFoundException):
+                        league_name = self._get_league_name(tournament)
+                        matches = self._get_all_matches(tournament)
+                    except betting_exceptions.XpathElementsNotFoundError:
                         continue
                     except betting_exceptions.XpathGeneralException:
                         continue
-        self.driver.close()
+                    except Exception as e:
+                        continue
+                    time.sleep(1)
+                    league_date = self._get_match_date(tournament)
+
+                    for match in matches:
+                        try:
+                            player_home, player_away = self._get_players(match)
+                            match_date_time = self._combine_match_date_time(league_date, self._get_match_time(match))
+                            bet_odds = self._get_match_odds(match)
+
+                            match_details = {
+                                "player_home": self._get_normalized_soccer_team_info(player_home),
+                                "player_away": self._get_normalized_soccer_team_info(player_away),
+                                "sport": betting_enums.Sports.FOOTBALL,
+                                "league": league_name,
+                                "tournament": '',
+                                "date_time": match_date_time,
+                                "bet_odds": bet_odds,
+                            }
+                            all_match_odds.append(match_details)
+                        except (betting_exceptions.XpathElementNotFoundException, betting_exceptions.XpathElementNotFoundException):
+                            continue
+                        except betting_exceptions.XpathGeneralException:
+                            continue
+                match_position += 1
+            position += match_position
+            current_scroll_position_element = new_position_element
+            self._scroll_page_down(self.driver, current_scroll_position_element)
+
+            all_leagues = self._get_all_leagues(self.driver)
+            new_position_element = all_leagues[-1]
+            print("Fetched {} matches".format(len(all_match_odds)))
+
         return all_match_odds
+
+    def _switch_to_date(self, day):
+        self.driver.get(self.url.format(day))
+        time.sleep(3)
+
+    @classmethod
+    def _scroll_page_down(cls, driver_element, element):
+        driver_element.execute_script("arguments[0].scrollIntoView();", element)
+        time.sleep(1)
 
     @classmethod
     def _get_all_leagues(cls, driver_element):
@@ -107,6 +146,7 @@ class VolcanoSoccerClient(VolcanoBaseClient):
         day_name, day, month = date.split(" ")
         month = constants.MONTH_MAPPING.get(month, 1)
         return datetime.datetime(datetime.date.today().year, month, int(day), int(hour), int(minute))
+
     @classmethod
     def _get_all_matches(cls, driver_element):
         x_path = './div[contains(@class, "multi-market-wrapper")]/div'

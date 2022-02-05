@@ -70,7 +70,7 @@ class AdmiralSoccerClient(AdmiralBaseClient):
             return
         time.sleep(1)
 
-    def get_matches_odds_all(self):
+    def get_matches_odds_all(self, days=3):
         league_name = ''
         tournament_name = ''
         current_date = datetime.date.today()
@@ -93,7 +93,7 @@ class AdmiralSoccerClient(AdmiralBaseClient):
 
                         bet_odds = self._get_match_odds(match)
                         match_date_time = self._combine_date_time(matches_date, self._get_match_time(match))
-                        if (match_date_time.date() - current_date).days > bet_place_constants.BET_DAY_FETCH_LIMIT:
+                        if (match_date_time.date() - current_date).days > days:
                             logger.info("{} Match is not within the 3 day range. Exiting".format(_LOG_PREFIX))
                             return all_matches
                     except betting_exceptions.XpathElementNotFoundException:
