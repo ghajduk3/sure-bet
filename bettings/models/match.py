@@ -6,6 +6,8 @@ from bettings import enums as betting_enums
 class Match(models.Model):
     player_home = models.CharField(max_length=50)
     player_away = models.CharField(max_length=50)
+    player_home_display = models.CharField(max_length=50)
+    player_away_display = models.CharField(max_length=50)
     date_time = models.DateTimeField()
     sport = models.IntegerField(
         choices=betting_enums.Sports.choices(), default=betting_enums.Sports.FOOTBALL

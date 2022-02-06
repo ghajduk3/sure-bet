@@ -4,7 +4,7 @@ import logging
 import datetime
 
 from bettings import enums as betting_enums
-from bettings.integrations.betting_places import enums as bet_place_enums
+from bettings.integrations import enums as bet_place_enums
 from bettings.services.data import matches as matches_service
 from bettings.services.data import odds as odds_service
 
@@ -49,10 +49,13 @@ class ArbitrageBets:
 
         all_matches = matches_service.find_matches_by_sport(sport=sport, date=datetime.date.today())
         all_arbitrages = []
+        print(len(all_matches))
         for match in all_matches:
+
             bet_odd_object = odds_service.find_odds_by_match(match.id)
             raw_match_odds = {odd.betting_institution: odd.odds for odd in list(bet_odd_object)}
             institutions = list(raw_match_odds.keys())
+
             prepared_odds = self._prepare_odds(raw_match_odds)
 
             for game in possible_games:
@@ -79,6 +82,8 @@ class ArbitrageBets:
     def _report_arbitrage_bet(self, match, tap, first_game, first_max_bet, first_bet_place, second_game, second_max_bet, second_bet_place):
         arbitrage_bet = {
             'TAP': tap,
+            'home_player_display': match.player_home_display,
+            'away_player_display': match.player_away_display,
             'home_player': match.player_home,
             'away_player': match.player_away,
             'date_time': match.date_time,
@@ -94,6 +99,7 @@ class ArbitrageBets:
             return arbitrage_bet
 
         return None
+
 
     @staticmethod
     def _calculate_TAP(first_odd, second_odd):

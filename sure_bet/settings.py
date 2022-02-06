@@ -129,8 +129,8 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
-# BETTING PLACE CLIENTS
-CLIENT_SPORT_URLS = {
+# BETTING PLACE SCAPER CLIENTS
+SCRAPER_CLIENT_SPORT_URLS = {
     'OLIMPWIN': {
         'FOOTBALL': 'https://olimpwin.com/sports/?t=-60#2/0/0/0/'
     },
@@ -153,3 +153,55 @@ CLIENT_SPORT_URLS = {
         'FOOTBALL': 'https://www.premierbet.me/sport/football-betting',
     },
 }
+
+# BETTING PLACE API CLIENTS
+DIRECT_CLIENT_SPORT_URLS = {
+    'VOLCANO': {
+        'FOOTBALL': {
+            'url': 'https://sportdataprovider.volcanobet.me/api/public/prematch/SportEvents',
+            'params': {
+                    'SportId': 1,
+                    'timezone': -60,
+                    'clientType': 'WebConsumer',
+                    'v': '1.1.2113-rc.2',
+                    'lang': 'sr-Latn-ME',
+            },
+        },
+    },
+    'ZLATNIK': {
+        'FOOTBALL': {
+            'url': 'https://apis.zlatnik.me/SportOfferApi/api/sport/offer/v3/sports/offer',
+            'params': {
+                'SportIds': 388,
+                'Offset': 0,
+                'Limit': 1000,
+            },
+        },
+    },
+    'MERIDIAN': {
+        'FOOTBALL': {
+            'url': {
+                'events': 'https://meridianbet.me/sails/sport/58/multiple-leagues-with-league/{league_id}/date/{date}/timeFilter/threeDays/filterPositions/{bet_group},0,0',
+                'leagues': 'https://meridianbet.me/sails/sidebars/standard',
+            },
+            'params': {
+
+            },
+        },
+    },
+    'SANSA': {
+        'FOOTBALL': {
+            'url': {
+                'events': 'https://sansabet.com/Oblozuvanje.aspx/GetLiga',
+                'leagues': 'https://sansabet.com/Oblozuvanje.aspx/GetSportoviSoLigi',
+            },
+            'params': {
+                'leagues': {
+                    "filter": "0",
+                    "activeStyle": "img/sports",
+                },
+            },
+        },
+    },
+}
+

@@ -2,7 +2,7 @@ from django.db import models
 
 from bettings import enums as betting_enums
 from bettings.models import match
-from bettings.integrations.betting_places import enums as bet_place_enums
+from bettings.integrations import enums as bet_place_enums
 
 
 class BetOdds(models.Model):
