@@ -15,7 +15,10 @@ def populate_data():
         bet_place_enums.BettingInstitutions.VOLCANO,
         bet_place_enums.BettingInstitutions.MERIDIAN,
         bet_place_enums.BettingInstitutions.SANSA,
-        bet_place_enums.BettingInstitutions.PREMIER
+        bet_place_enums.BettingInstitutions.LOB,
+        bet_place_enums.BettingInstitutions.PREMIER,
+        bet_place_enums.BettingInstitutions.LVBET,
+        bet_place_enums.BettingInstitutions.MAXBET,
     ]
     for bet_place in bet_places:
         print("Fetching data from {}".format(bet_place.name))

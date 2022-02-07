@@ -7,6 +7,9 @@ API_CLIENTS = [
         bet_place_enums.BettingInstitutions.ZLATNIK,
         bet_place_enums.BettingInstitutions.MERIDIAN,
         bet_place_enums.BettingInstitutions.SANSA,
+        bet_place_enums.BettingInstitutions.LOB,
+        bet_place_enums.BettingInstitutions.LVBET,
+        bet_place_enums.BettingInstitutions.MAXBET,
 ]
 
 SCRAPER_CLIENTS = [
