@@ -8,6 +8,11 @@ from bettings.integrations.direct.betting_places.volcano import client as volcan
 from bettings.integrations.direct.betting_places.zlatnik import client as zlatnik_client
 from bettings.integrations.direct.betting_places.meridian import client as meridian_client
 from bettings.integrations.direct.betting_places.sansa import client as sansa_client
+from bettings.integrations.direct.betting_places.lob import client as lob_client
+from bettings.integrations.direct.betting_places.lvbet import client as lvbet_client
+from bettings.integrations.direct.betting_places.maxbet import client as maxbet_client
+
+
 
 logger = logging.getLogger(__name__)
 _LOG_PREFIX = "[API-CLIENT-FACTORY]"
@@ -21,6 +26,9 @@ class Factory:
             bet_place_enums.BettingInstitutions.ZLATNIK: zlatnik_client.ZlatnikApiSoccerClient,
             bet_place_enums.BettingInstitutions.MERIDIAN: meridian_client.MeridianApiSoccerClient,
             bet_place_enums.BettingInstitutions.SANSA: sansa_client.SansaApiSoccerClient,
+            bet_place_enums.BettingInstitutions.LOB: lob_client.LobApiSoccerClient,
+            bet_place_enums.BettingInstitutions.LVBET: lvbet_client.LVBetApiSoccerClient,
+            bet_place_enums.BettingInstitutions.MAXBET: maxbet_client.MaxBetApiSoccerClient,
         }
     }
 

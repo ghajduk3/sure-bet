@@ -93,7 +93,7 @@ class ArbitrageBets:
             'bet_place': '{} - {}'.format(first_bet_place, second_bet_place)
         }
 
-        if tap < 98:
+        if tap < 100:
             print(arbitrage_bet)
             # logger.info("{} Arbitrage is possible. {}".format(_LOG_PREFIX, json.dumps(arbitrage_bet)))
             return arbitrage_bet
