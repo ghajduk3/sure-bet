@@ -8,13 +8,13 @@ def populate_data():
     match_service_client = match_service.MatchProcessing()
 
     bet_places = [
-        # bet_place_enums.BettingInstitutions.OLIMPWIN,
-        # bet_place_enums.BettingInstitutions.ADMIRAL,
-        # bet_place_enums.BettingInstitutions.SBBET,
-        # bet_place_enums.BettingInstitutions.ZLATNIK,
-        # bet_place_enums.BettingInstitutions.VOLCANO,
-        # bet_place_enums.BettingInstitutions.MERIDIAN,
-        # bet_place_enums.BettingInstitutions.SANSA,
+        bet_place_enums.BettingInstitutions.OLIMPWIN,
+        bet_place_enums.BettingInstitutions.ADMIRAL,
+        bet_place_enums.BettingInstitutions.SBBET,
+        bet_place_enums.BettingInstitutions.ZLATNIK,
+        bet_place_enums.BettingInstitutions.VOLCANO,
+        bet_place_enums.BettingInstitutions.MERIDIAN,
+        bet_place_enums.BettingInstitutions.SANSA,
         bet_place_enums.BettingInstitutions.PREMIER
     ]
     for bet_place in bet_places:
