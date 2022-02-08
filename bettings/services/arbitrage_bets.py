@@ -100,7 +100,6 @@ class ArbitrageBets:
 
         return None
 
-
     @staticmethod
     def _calculate_TAP(first_odd, second_odd):
         return (1 / first_odd) * 100 + (1 / second_odd) * 100
